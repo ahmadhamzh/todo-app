@@ -1,40 +1,54 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { displaySettings } from './context'
+import { Button, Card } from "@blueprintjs/core";
+import './list.css'
+
 export default function List(props) {
     const context = useContext(displaySettings);
-    const [pageNumber, setPageNumber] = useState({ start: 0, end: 5, numPages: 1, cure: 1 })
+    const [pageNumber, setPageNumber] = useState({ start: 0, end: context.numOfItems, numPages: 1, cure: 1 })
     console.log((pageNumber.numPages), '==========');
     useEffect(() => {
-        setPageNumber({ ...pageNumber, numPages: Math.ceil((props.list.length / 5)) })
-    },[Math.ceil((props.list.length / 5))])
-    let pageNumberEnd = context.numOfItems
+        setPageNumber({ ...pageNumber, numPages: Math.ceil((props.list.length / context.numOfItems)) })
+    }, [Math.ceil((props.list.length / context.numOfItems))])
+
     function handelNext() {
-        if (pageNumber.cure <= pageNumber.numPages - 1) {            
-            setPageNumber({ ...pageNumber, start: pageNumber.start + 5, end: pageNumber.end + 5, cure: pageNumber.cure + 1 })
+        if (pageNumber.cure <= pageNumber.numPages - 1) {
+            setPageNumber({ ...pageNumber, start: pageNumber.start + context.numOfItems, end: pageNumber.end + context.numOfItems, cure: pageNumber.cure + 1 })
         }
     }
-    
-    function handelPrev() {        
+
+    function renderList(polean) {
+        let render;
+        if (polean === true) {
+            render = props.list.filter(item => !item.complete)
+
+        } else {
+            render = props.list
+        }
+        return render
+    }
+
+    function handelPrev() {
         if (pageNumber.cure - 1 > 0) {
-            setPageNumber({ ...pageNumber, start: pageNumber.start - 5, end: pageNumber.end - 5, cure: pageNumber.cure - 1 })
+            setPageNumber({ ...pageNumber, start: pageNumber.start - context.numOfItems, end: pageNumber.end - context.numOfItems, cure: pageNumber.cure - 1 })
         }
     }
 
     return (
-        <div>
-            {props.list.slice(pageNumber.start, pageNumber.end).map(item => (
-                <div key={item.id}>
-                    <p>{item.text}</p>
-                    <p><small>Assigned to: {item.assignee}</small></p>
-                    <p><small>Difficulty: {item.difficulty}</small></p>
-                    <div onClick={() => props.toggleComplete(item.id)}>Complete: {item.complete.toString()}</div>
-                    <hr />
+        <div id='list'>
+            {renderList(context.displayItem).slice(pageNumber.start, pageNumber.end).map(item => (
 
-                </div>
+                <Card id="card">
+                    <h3>{item.text}</h3>
+                    <p>Assigned to: {item.assignee}</p>
+                    <p>Difficulty: {item.difficulty}</p>
+                    <Button onClick={() => props.toggleComplete(item.id)} > Complete : {item.complete.toString()} </Button>
+                </Card>
             ))}
-            <button onClick={() => handelNext()}>next</button>
+
+            <Button onClick={() => handelNext()}>next</Button>
             <label>{pageNumber.cure}/{pageNumber.numPages}</label>
-            <button onClick={() => handelPrev()}>prev</button>
+            <Button onClick={() => handelPrev()}>prev</Button>
         </div>
     )
 }
