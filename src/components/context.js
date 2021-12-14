@@ -11,7 +11,6 @@ export default function Displaycontext(props) {
     const getFromStorge = localStorage.getItem('mySetiing')
     useEffect(() => {
         setNumOfItems(getFromStorge ? getFromStorge : 2)
-
     }, []);
 
     const settingHandel = (polean, num) => {

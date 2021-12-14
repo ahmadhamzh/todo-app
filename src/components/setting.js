@@ -4,6 +4,7 @@ import Button from 'react-bootstrap/Form'
 import { displaySettings } from './context'
 
 export default function Setting() {
+
     const context = useContext(displaySettings);
 
     function handelSettingSubmit() {
@@ -22,7 +23,7 @@ export default function Setting() {
         <div>
             <Form >
                 <Form.Label>item per page</Form.Label>
-                <Form.Select className="me-sm-2" id="itemPage" >                    
+                <Form.Select className="me-sm-2" id="itemPage" >
                     <option value="3">three</option>
                     <option value="4">four</option>
                     <option value="5">five</option>
@@ -32,11 +33,10 @@ export default function Setting() {
                     <option value='false'>show</option>
                     <option value="true">hide</option>
                 </Form.Select>
-
             </Form>
-            <button onClick={() => { handelSettingSubmit() }} variant="primary" type="submit">
+            <Button onClick={() => { handelSettingSubmit() }} variant="primary" type="submit">
                 Save
-            </button>
+            </Button>
         </div>
     )
 }

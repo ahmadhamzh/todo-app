@@ -2,6 +2,7 @@ import React, { useContext, useState, useEffect } from 'react'
 import { displaySettings } from './context'
 import { Button, Card } from "@blueprintjs/core";
 import './list.css'
+import Auth from './auth'
 
 export default function List(props) {
     const context = useContext(displaySettings);
@@ -21,7 +22,6 @@ export default function List(props) {
         let render;
         if (polean === true) {
             render = props.list.filter(item => !item.complete)
-
         } else {
             render = props.list
         }
@@ -42,7 +42,9 @@ export default function List(props) {
                     <h3>{item.text}</h3>
                     <p>Assigned to: {item.assignee}</p>
                     <p>Difficulty: {item.difficulty}</p>
-                    <Button onClick={() => props.toggleComplete(item.id)} > Complete : {item.complete.toString()} </Button>
+                    <Auth capability="update">
+                        <Button onClick={() => props.toggleComplete(item.id)} > Complete : {item.complete.toString()} </Button>
+                    </Auth>
                 </Card>
             ))}
 
