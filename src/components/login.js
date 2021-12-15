@@ -14,7 +14,7 @@ export default function Login(props) {
   };
 
   const handleSubmit = e => {
-    console.log(state);
+    // console.log(state);
     e.preventDefault();
     context.login(state.username, state.password);
   };

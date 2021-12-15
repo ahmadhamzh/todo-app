@@ -25,10 +25,10 @@ const ToDo = () => {
     setList([...list, item]);
   }
 
-  function deleteItem(id) {
-    const items = list.filter(item => item.id !== id);
-    setList(items);
-  }
+  // function deleteItem(id) {
+  //   const items = list.filter(item => item.id !== id);
+  //   setList(items);
+  // }
 
   function toggleComplete(id) {
 
@@ -69,7 +69,7 @@ const ToDo = () => {
                   />
                 </Auth>
 
-                <Auth>
+                <Auth capability="read">
                   <List
                     list={list}
                     toggleComplete={toggleComplete}
