@@ -1,13 +1,16 @@
 import React from 'react';
 import cookie from 'react-cookies';
 import jwt from 'jsonwebtoken';
+import superagent from 'superagent';
+import axios from 'axios';
+import base64 from 'base-64'
 
-const testUsers = {
-  admin: {password:'password', name:'Administrator', role:'admin', capabilities:['create','read','update','delete']},
-  editor: { password: 'password', name: 'Editor', role: 'editor', capabilities: ['read', 'update']},
-  writer: { password: 'password', name: 'Writer', role: 'writer', capabilities: ['create']},
-};
-
+// const testUsers = {
+//   admin: {password:'password', name:'Administrator', role:'admin', capabilities:['create','read','update','delete']},
+//   editor: { password: 'password', name: 'Editor', role: 'editor', capabilities: ['read', 'update']},
+//   writer: { password: 'password', name: 'Writer', role: 'writer', capabilities: ['create']},
+// };
+const PORT = process.env.PORT
 export const LoginContext = React.createContext();
 
 class LoginProvider extends React.Component {
@@ -19,20 +22,43 @@ class LoginProvider extends React.Component {
       can: this.can,
       login: this.login,
       logout: this.logout,
-      user: {capabilities:[]},
+      user: { capabilities: [] },
     };
   }
 
   can = (capability) => {
-    return this?.state?.user?.capabilities?.includes(capability);
+    return this?.state?.capabilities?.includes(capability);
   }
 
-  login = (username, password) => {
-    if (testUsers[username]) {
-      // Create a "good" token, like you'd get from a server
-      const token = jwt.sign(testUsers[username], process.env.REACT_APP_SECRET || 'secrete');
-      this.validateToken(token);
+  login = async (username, password) => {
+    try {
+      const encodedBase64Token = Buffer.from(`${username}:${password}`).toString('base64');
+      const authorization = `Basic ${encodedBase64Token}`;
+      var data = '';
+      var config = {
+        method: 'post',
+        url: 'http://localhost:3030/signin',
+        headers: {
+          'Authorization': authorization
+        },
+        data: data
+      };
+
+      const response = await axios(config)
+      console.log(response.data);
+      this.setState({
+        token : response.data.token,
+        loggedIn : true,
+        user : response.data.username,
+        capabilities : response.data.capabilities
+      });
+      console.log(this.state);
+      
+
+    } catch (error) {
+      console.log(error.message);
     }
+
   }
 
   logout = () => {
@@ -40,8 +66,11 @@ class LoginProvider extends React.Component {
   };
 
   validateToken = token => {
+    console.log(token);
     try {
-      let user = jwt.verify(token, process.env.REACT_APP_SECRET || 'secrete');
+      let user = jwt.verify(token, process.env.REACT_APP_SECRET);
+      console.log(user, '======');
+      console.log(token, '++++++++');
       this.setLoginState(true, token, user);
     }
     catch (e) {
@@ -51,8 +80,8 @@ class LoginProvider extends React.Component {
   };
 
   setLoginState = (loggedIn, token, user) => {
-    cookie.save('auth', token);
     this.setState({ token, loggedIn, user });
+    cookie.save('auth', token);
   };
 
   componentDidMount() {
