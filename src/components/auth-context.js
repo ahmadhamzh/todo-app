@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import superagent from 'superagent';
 import axios from 'axios';
 import base64 from 'base-64'
-
+require('dotenv').config();
 // const testUsers = {
 //   admin: {password:'password', name:'Administrator', role:'admin', capabilities:['create','read','update','delete']},
 //   editor: { password: 'password', name: 'Editor', role: 'editor', capabilities: ['read', 'update']},
