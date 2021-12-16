@@ -37,7 +37,7 @@ class LoginProvider extends React.Component {
       var data = '';
       var config = {
         method: 'post',
-        url: 'http://localhost:3030/signin',
+        url: PORT,
         headers: {
           'Authorization': authorization
         },
